@@ -1,0 +1,23 @@
+version: '3.8'
+
+#Container for development database
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpassword123321
+      POSTGRES_DB: notes_db
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@mail.com
+      - PGADMIN_DEFAULT_PASSWORD=root
+    ports:
+      - 5050:80
