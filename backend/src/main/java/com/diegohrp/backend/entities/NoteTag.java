@@ -2,19 +2,20 @@ package com.diegohrp.backend.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "tags")
-@EqualsAndHashCode(of = "id")
+@Table(name = "notes_tags")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class Tag {
+public class NoteTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String name;
+    @ManyToOne
+    private Note note;
+    @ManyToOne
+    private Tag tag;
 }

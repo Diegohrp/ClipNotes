@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "notes")
@@ -25,4 +27,6 @@ public class Note {
     private User user;
     @Column(name = "created_at")
     private LocalDate createdAt;
+    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL)
+    private List<NoteTag> tags = new ArrayList<>();
 }
