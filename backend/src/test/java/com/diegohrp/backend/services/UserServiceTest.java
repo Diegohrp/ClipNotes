@@ -31,7 +31,7 @@ class UserServiceTest {
     @DisplayName("Shoud return a UserPublicData record with the data of the saved user")
     public void testsaveUser() {
         User user = getUserExample();
-        when(userRepository.findByEmailOrUsername(any(String.class),any(String.class))).thenReturn(Optional.empty());
+        when(userRepository.findByEmailOrUsername(any(String.class), any(String.class))).thenReturn(Optional.empty());
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         UserPublicData savedUser = userService.add(user);
@@ -48,8 +48,32 @@ class UserServiceTest {
     @DisplayName("Can't add a new user with an existing email or username")
     public void testUniqueUser() {
         User existingUser = getUserExample();
-        when(userRepository.findByEmailOrUsername(any(String.class),any(String.class))).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByEmailOrUsername(any(String.class), any(String.class))).thenReturn(Optional.of(existingUser));
 
         assertThrows(RuntimeException.class, () -> userService.add(existingUser));
+    }
+
+    @Test
+    @DisplayName("Return user found by id")
+    public void testGetUserById() {
+        User existingUser = getUserExample();
+
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(existingUser));
+        UserPublicData userFound = userService.getById(existingUser.getId());
+
+        assertNotNull(userFound);
+        assertEquals(existingUser.getId(), userFound.id());
+        assertEquals(existingUser.getName(), userFound.name());
+        assertEquals(existingUser.getLastName(), userFound.lastName());
+        assertEquals(existingUser.getUsername(), userFound.username());
+        assertEquals(existingUser.getEmail(), userFound.email());
+    }
+
+    @Test
+    @DisplayName("Returns an empty optional when user is not found")
+    public void testUserNotFound() {
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+        UserPublicData userFound = userService.getById(1L);
+        assertNull(userFound);
     }
 }

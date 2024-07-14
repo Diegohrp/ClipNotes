@@ -12,10 +12,12 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository repository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public UserService(UserRepository repository) {
+    public UserService(UserRepository repository, UserRepository userRepository) {
         this.repository = repository;
+        this.userRepository = userRepository;
     }
 
     public UserPublicData add(User user) {
@@ -28,5 +30,10 @@ public class UserService {
         }
 
         return new UserPublicData(repository.save(user));
+    }
+
+    public UserPublicData getById(Long id) {
+        Optional<User> userFound = userRepository.findById(id);
+        return userFound.map(UserPublicData::new).orElse(null);
     }
 }
