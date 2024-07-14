@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static com.diegohrp.backend.Utils.getUserExample;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -29,8 +30,8 @@ class UserServiceTest {
     @Test
     @DisplayName("Shoud return a UserPublicData record with the data of the saved user")
     public void testsaveUser() {
-        User user = this.returnUserExample();
-        when(userRepository.findByEmail(any(String.class))).thenReturn(Optional.empty());
+        User user = getUserExample();
+        when(userRepository.findByEmailOrUsername(any(String.class),any(String.class))).thenReturn(Optional.empty());
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         UserPublicData savedUser = userService.add(user);
@@ -44,17 +45,11 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Can't add a new user with an existing email")
-    public void testUniqueEmail() {
-        User existingUser = this.returnUserExample();
-        when(userRepository.findByEmail(any(String.class))).thenReturn(Optional.of(existingUser));
+    @DisplayName("Can't add a new user with an existing email or username")
+    public void testUniqueUser() {
+        User existingUser = getUserExample();
+        when(userRepository.findByEmailOrUsername(any(String.class),any(String.class))).thenReturn(Optional.of(existingUser));
 
         assertThrows(RuntimeException.class, () -> userService.add(existingUser));
     }
-
-
-    User returnUserExample() {
-        return new User(1L, "name", "lastName", "username", "email@mail.com", "password");
-    }
-
 }

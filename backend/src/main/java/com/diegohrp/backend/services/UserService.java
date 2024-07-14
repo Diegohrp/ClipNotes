@@ -19,10 +19,14 @@ public class UserService {
     }
 
     public UserPublicData add(User user) {
-        Optional<User> existingUser = repository.findByEmail(user.getEmail());
+        Optional<User> existingUser = repository.findByEmailOrUsername(user.getEmail(), user.getUsername());
         if (existingUser.isPresent()) {
-            throw new RuntimeException("This email already exists");
+            if (existingUser.get().getEmail().equals(user.getEmail())) {
+                throw new RuntimeException("This email already exists");
+            }
+            throw new RuntimeException("This username already exists");
         }
+
         return new UserPublicData(repository.save(user));
     }
 }
